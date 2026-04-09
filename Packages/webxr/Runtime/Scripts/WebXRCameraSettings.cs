@@ -180,16 +180,22 @@ namespace WebXR
 
     private void OnEnable()
     {
+      if (WebXRManager.Instance != null)
+      {
       WebXRManager.OnXRChange += OnXRChange;
       OnXRChange(WebXRManager.Instance.XRState,
                   WebXRManager.Instance.ViewsCount,
                   WebXRManager.Instance.ViewsLeftRect,
                   WebXRManager.Instance.ViewsRightRect);
+      }
     }
 
     private void OnDisable()
     {
-      WebXRManager.OnXRChange -= OnXRChange;
+      if (WebXRManager.Instance != null)
+      {
+        WebXRManager.OnXRChange -= OnXRChange;
+      }
     }
 
     private void OnXRChange(WebXRState state, int viewsCount, Rect leftRect, Rect rightRect)

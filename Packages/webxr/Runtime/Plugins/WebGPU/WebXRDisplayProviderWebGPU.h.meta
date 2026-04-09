@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 7be1b476788ba7a4598d57794a16c375
+guid: 29ba0ed11c4e5f54b831152cfdcd343e
 PluginImporter:
   externalObjects: {}
   serializedVersion: 3
@@ -7,20 +7,17 @@ PluginImporter:
   executionOrder: {}
   defineConstraints: []
   isPreloaded: 0
-  isOverridable: 0
+  isOverridable: 1
   isExplicitlyReferenced: 0
   validateReferences: 1
   platformData:
     Any:
-      enabled: 0
+      enabled: 1
       settings: {}
     Editor:
       enabled: 0
       settings:
         DefaultValueInitialized: true
-    WebGL:
-      enabled: 1
-      settings: {}
   userData: 
   assetBundleName: 
   assetBundleVariant: 

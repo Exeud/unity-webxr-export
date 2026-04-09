@@ -108,9 +108,15 @@ UnitySubsystemErrorCode WebXRTrackingProvider::UpdateDeviceState(UnityXRInternal
     rightPosition.x = *(m_ViewsDataArray + start + 3);
     rightPosition.y = *(m_ViewsDataArray + start + 4);
     rightPosition.z = *(m_ViewsDataArray + start + 5);
+    UnityXRVector4 rightRotation;
+    int rightRotStart = 36;
+    rightRotation.x = *(m_ViewsDataArray + rightRotStart);
+    rightRotation.y = *(m_ViewsDataArray + rightRotStart + 1);
+    rightRotation.z = *(m_ViewsDataArray + rightRotStart + 2);
+    rightRotation.w = *(m_ViewsDataArray + rightRotStart + 3);
     // Right pose
-    input.DeviceState_SetAxis3DValue(state, 8, position);
-    input.DeviceState_SetRotationValue(state, 9, rotation);
+    input.DeviceState_SetAxis3DValue(state, 8, rightPosition);
+    input.DeviceState_SetRotationValue(state, 9, rightRotation);
 
     // Update center pose
     position.x = 0.5f * (position.x + rightPosition.x);

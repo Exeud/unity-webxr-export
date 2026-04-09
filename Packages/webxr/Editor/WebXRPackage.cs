@@ -25,7 +25,7 @@ namespace WebXR.Editor
         static readonly IXRPackageMetadata s_Metadata = new WebXRPackageMetadata()
         {
             packageName = "WebXR Export",
-            packageId = "com.de-panther.webxr",
+            packageId = "com.exeud.webxr",
             settingsType = typeof(WebXRSettings).FullName,
             loaderMetadata = new List<IXRLoaderMetadata>() 
             {

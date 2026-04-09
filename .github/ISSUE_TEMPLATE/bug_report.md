@@ -26,10 +26,7 @@ If applicable, add screenshots to help explain your problem.
 **Unity info (please complete the following information):**
 - Editor version:
 - WebXR package version:
-- WebXR Interactions version:
 - Git or OpenUPM:
-- Using old components (like the Desert sample) or Input System + XR Interaction Toolkit:
-- Built-in render pipeline or URP:
 
 **Desktop (please complete the following information):**
  - OS + Version: [e.g. Windows 10]

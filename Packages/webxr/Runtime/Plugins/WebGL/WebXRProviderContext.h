@@ -15,25 +15,11 @@ struct IUnityXRDisplayInterface;
 struct IUnityXRInputInterface;
 
 class WebXRDisplayProvider;
+class WebXRDisplayProviderWebGPU;
 class WebXRTrackingProvider;
 
-struct WebXRProviderContext
-{
-    IUnityInterfaces* interfaces;
-    IUnityXRTrace* trace;
-
-    IUnityXRDisplayInterface* display;
-    WebXRDisplayProvider* displayProvider;
-
-    IUnityXRInputInterface* input;
-    WebXRTrackingProvider* trackingProvider;
-};
-
-inline WebXRProviderContext& GetWebXRProviderContext(void* data)
-{
-    assert(data != NULL);
-    return *static_cast<WebXRProviderContext*>(data);
-}
+// Forward-declare WebXRProviderContext so ProviderImpl can hold a reference to it.
+struct WebXRProviderContext;
 
 class ProviderImpl
 {
@@ -55,3 +41,21 @@ protected:
     WebXRProviderContext& m_Ctx;
     UnitySubsystemHandle m_Handle;
 };
+
+struct WebXRProviderContext
+{
+    IUnityInterfaces* interfaces;
+    IUnityXRTrace* trace;
+
+    IUnityXRDisplayInterface* display;
+    ProviderImpl* displayProvider;
+
+    IUnityXRInputInterface* input;
+    WebXRTrackingProvider* trackingProvider;
+};
+
+inline WebXRProviderContext& GetWebXRProviderContext(void* data)
+{
+    assert(data != NULL);
+    return *static_cast<WebXRProviderContext*>(data);
+}

@@ -9,7 +9,18 @@
 static WebXRProviderContext* s_Context{};
 
 UnitySubsystemErrorCode Load_Display(WebXRProviderContext&);
+UnitySubsystemErrorCode Load_Display_WebGPU(WebXRProviderContext&);
 UnitySubsystemErrorCode Load_Input(WebXRProviderContext&);
+
+// Set by JS (webxr.jspre) via Module.ccall('WebXRSetIsWebGPU') before the
+// XR plugin registers its lifecycle providers.  Avoids any compile-time define.
+static bool s_IsWebGPU = false;
+
+extern "C" void UNITY_INTERFACE_EXPORT WebXRSetIsWebGPU(int isWebGPU)
+{
+    s_IsWebGPU = (isWebGPU != 0);
+    printf("[WebXR] WebXRSetIsWebGPU: %d\n", isWebGPU);
+}
 
 static bool ReportError(const char* name, UnitySubsystemErrorCode err)
 {
@@ -29,8 +40,16 @@ UnityPluginLoad(IUnityInterfaces* unityInterfaces)
     ctx->interfaces = unityInterfaces;
     ctx->trace = unityInterfaces->Get<IUnityXRTrace>();
 
-    if (ReportError("Display", Load_Display(*ctx)))
-        return;
+    if (s_IsWebGPU)
+    {
+        if (ReportError("Display", Load_Display_WebGPU(*ctx)))
+            return;
+    }
+    else
+    {
+        if (ReportError("Display", Load_Display(*ctx)))
+            return;
+    }
 
     if (ReportError("Input", Load_Input(*ctx)))
         return;

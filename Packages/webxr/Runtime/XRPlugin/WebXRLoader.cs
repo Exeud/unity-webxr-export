@@ -16,7 +16,6 @@ namespace WebXR
     public WebXRSubsystem WebXRSubsystem => GetLoadedSubsystem<WebXRSubsystem>();
     public XRDisplaySubsystem XRDisplaySubsystem => GetLoadedSubsystem<XRDisplaySubsystem>();
     public XRInputSubsystem XRInputSubsystem => GetLoadedSubsystem<XRInputSubsystem>();
-    private bool useXRDisplaySubsystem = true;
 
 #if UNITY_WEBGL && !UNITY_EDITOR
     [DllImport("__Internal")]
@@ -38,8 +37,6 @@ namespace WebXR
 #if UNITY_WEBGL && !UNITY_EDITOR
         SetWebXRSettings(settings.ToJson());
 #endif
-        Debug.Log($"Sent WebXRSettings");
-        useXRDisplaySubsystem = !settings.DisableXRDisplaySubsystem;
       }
       XRSettings.useOcclusionMesh = false;
       CreateSubsystem<WebXRSubsystemDescriptor, WebXRSubsystem>(sampleSubsystemDescriptors, typeof(WebXRSubsystem).FullName);
@@ -48,11 +45,10 @@ namespace WebXR
 
     public void StartEssentialSubsystems()
     {
-      if (useXRDisplaySubsystem)
-      {
-        CreateSubsystem<XRDisplaySubsystemDescriptor, XRDisplaySubsystem>(displaySubsystemDescriptors, "WebXR Display");
-        XRDisplaySubsystem.Start();
-      }
+      
+      CreateSubsystem<XRDisplaySubsystemDescriptor, XRDisplaySubsystem>(displaySubsystemDescriptors, "WebXR Display");
+      XRDisplaySubsystem.Start();
+      
       CreateSubsystem<XRInputSubsystemDescriptor, XRInputSubsystem>(inputSubsystemDescriptors, "WebXR Tracked Display");
       XRInputSubsystem.Start();
       // TODO: Enable Single-Pass rendering
@@ -61,11 +57,8 @@ namespace WebXR
 
     public void EndEssentialSubsystems()
     {
-      if (useXRDisplaySubsystem)
-      {
-        XRDisplaySubsystem.Stop();
-        XRDisplaySubsystem.Destroy();
-      }
+      XRDisplaySubsystem.Stop();
+      XRDisplaySubsystem.Destroy();
       XRInputSubsystem.Stop();
       XRInputSubsystem.Destroy();
     }
@@ -86,10 +79,7 @@ namespace WebXR
     public override bool Deinitialize()
     {
       WebXRSubsystem.Destroy();
-      if (useXRDisplaySubsystem)
-      {
-        XRDisplaySubsystem?.Destroy();
-      }
+      XRDisplaySubsystem?.Destroy();
       XRInputSubsystem?.Destroy();
       return base.Deinitialize();
     }

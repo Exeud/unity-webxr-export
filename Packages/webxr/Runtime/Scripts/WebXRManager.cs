@@ -68,12 +68,6 @@ namespace WebXR
       remove => WebXRSubsystem.OnViewsDistanceChange -= value;
     }
 
-    public static event WebXRSubsystem.HitTestUpdate OnViewerHitTestUpdate
-    {
-      add => WebXRSubsystem.OnViewerHitTestUpdate += value;
-      remove => WebXRSubsystem.OnViewerHitTestUpdate -= value;
-    }
-
     public bool isSupportedAR
     {
       get
@@ -116,21 +110,6 @@ namespace WebXR
     public void HapticPulse(WebXRControllerHand hand, float intensity, float duration)
     {
       subsystem?.HapticPulse(hand, intensity, duration);
-    }
-
-    public void PreRenderSpectatorCamera()
-    {
-      subsystem?.PreRenderSpectatorCamera();
-    }
-
-    public void StartViewerHitTest()
-    {
-      subsystem?.StartViewerHitTest();
-    }
-
-    public void StopViewerHitTest()
-    {
-      subsystem?.StopViewerHitTest();
     }
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]

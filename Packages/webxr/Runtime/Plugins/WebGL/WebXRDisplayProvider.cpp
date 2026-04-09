@@ -20,7 +20,7 @@ static bool s_SkipFrame = true;
 #define WORKAROUND_RESET_SKIP_FIRST_FRAME() s_SkipFrame = true;
 // END WORKAROUND
 
-class WebXRDisplayProvider : ProviderImpl
+class WebXRDisplayProvider : public ProviderImpl
 {
 public:
     WebXRDisplayProvider(WebXRProviderContext& ctx, UnitySubsystemHandle handle)
@@ -367,27 +367,27 @@ static UnitySubsystemErrorCode UNITY_INTERFACE_API Display_Initialize(UnitySubsy
 
     gfxThreadProvider.Start = [](UnitySubsystemHandle handle, void* userData, UnityXRRenderingCapabilities* renderingCaps) -> UnitySubsystemErrorCode {
         auto& ctx = GetWebXRProviderContext(userData);
-        return ctx.displayProvider->GfxThread_Start(*renderingCaps);
+        return static_cast<WebXRDisplayProvider*>(ctx.displayProvider)->GfxThread_Start(*renderingCaps);
     };
 
     gfxThreadProvider.SubmitCurrentFrame = [](UnitySubsystemHandle handle, void* userData) -> UnitySubsystemErrorCode {
         auto& ctx = GetWebXRProviderContext(userData);
-        return ctx.displayProvider->GfxThread_SubmitCurrentFrame();
+        return static_cast<WebXRDisplayProvider*>(ctx.displayProvider)->GfxThread_SubmitCurrentFrame();
     };
 
     gfxThreadProvider.PopulateNextFrameDesc = [](UnitySubsystemHandle handle, void* userData, const UnityXRFrameSetupHints* frameHints, UnityXRNextFrameDesc* nextFrame) -> UnitySubsystemErrorCode {
         auto& ctx = GetWebXRProviderContext(userData);
-        return ctx.displayProvider->GfxThread_PopulateNextFrameDesc(*frameHints, *nextFrame);
+        return static_cast<WebXRDisplayProvider*>(ctx.displayProvider)->GfxThread_PopulateNextFrameDesc(*frameHints, *nextFrame);
     };
 
     gfxThreadProvider.Stop = [](UnitySubsystemHandle handle, void* userData) -> UnitySubsystemErrorCode {
         auto& ctx = GetWebXRProviderContext(userData);
-        return ctx.displayProvider->GfxThread_Stop();
+        return static_cast<WebXRDisplayProvider*>(ctx.displayProvider)->GfxThread_Stop();
     };
 
     gfxThreadProvider.BlitToMirrorViewRenderTarget = [](UnitySubsystemHandle handle, void* userData, const UnityXRMirrorViewBlitInfo mirrorBlitInfo) -> UnitySubsystemErrorCode {
         auto& ctx = GetWebXRProviderContext(userData);
-        return ctx.displayProvider->GfxThread_FinalBlitToGameViewBackBuffer(&mirrorBlitInfo, ctx);
+        return static_cast<WebXRDisplayProvider*>(ctx.displayProvider)->GfxThread_FinalBlitToGameViewBackBuffer(&mirrorBlitInfo, ctx);
     };
 
     ctx.display->RegisterProviderForGraphicsThread(handle, &gfxThreadProvider);
@@ -396,7 +396,7 @@ static UnitySubsystemErrorCode UNITY_INTERFACE_API Display_Initialize(UnitySubsy
 
     provider.UpdateDisplayState = [](UnitySubsystemHandle handle, void* userData, UnityXRDisplayState* state) -> UnitySubsystemErrorCode {
         auto& ctx = GetWebXRProviderContext(userData);
-        return ctx.displayProvider->UpdateDisplayState(state);
+        return static_cast<WebXRDisplayProvider*>(ctx.displayProvider)->UpdateDisplayState(state);
     };
 
     ctx.display->RegisterProvider(handle, &provider);

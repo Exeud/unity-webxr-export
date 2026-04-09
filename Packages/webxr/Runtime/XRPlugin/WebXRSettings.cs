@@ -28,10 +28,6 @@ namespace WebXR
     public ReferenceSpaceTypes VRRequiredReferenceSpace = ReferenceSpaceTypes.local_floor;
     public ExtraFeatureTypes VROptionalFeatures = ExtraFeatureTypes.hand_tracking;
 
-    [Header("AR Settings")]
-    public ReferenceSpaceTypes ARRequiredReferenceSpace = ReferenceSpaceTypes.local_floor;
-    public ExtraFeatureTypes AROptionalFeatures = (ExtraFeatureTypes)(-1);
-
     [Header("More Settings")]
     [Tooltip(@"Should manually set FramebufferScaleFactor?
 The scale factor in which the scene is rendered in.
@@ -49,12 +45,6 @@ Default is 1.0, the recommended resolution.")]
 WebXRInputSystem is needed when using Unity Input System and XR Interaction Toolkit.
 WebXRInputSystem is part of WebXR Interactions package.")]
     public bool AutoLoadWebXRInputSystem = true;
-    [Tooltip(@"Should XRDisplaySubsystem be used?
-By default it is in use and require URP.
-Disabling it can allow the use of BiRP,
-but it's less convenient as it means using a list of Cameras instead of 1.
-If XRDisplaySubsystem is disabled use the WebXRCamera component.")]
-    public bool DisableXRDisplaySubsystem = false;
 
     string EnumToString<T>(T value) where T : Enum
     {
@@ -88,8 +78,6 @@ If XRDisplaySubsystem is disabled use the WebXRCamera component.")]
       string result = $@"{{
         ""VRRequiredReferenceSpace"": [""{EnumToString(VRRequiredReferenceSpace)}""],
         ""VROptionalFeatures"": {FlagsToString(VROptionalFeatures)},
-        ""ARRequiredReferenceSpace"": [""{EnumToString(ARRequiredReferenceSpace)}""],
-        ""AROptionalFeatures"": {FlagsToString(AROptionalFeatures)},
         ""UseFramebufferScaleFactor"": {(UseFramebufferScaleFactor ? "true" : "false")},
         ""UseNativeResolution"": {(UseNativeResolution ? "true" : "false")},
         ""FramebufferScaleFactor"": {FramebufferScaleFactor}

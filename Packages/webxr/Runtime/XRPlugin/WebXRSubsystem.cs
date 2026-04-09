@@ -206,13 +206,6 @@ namespace WebXR
         }
       }
 
-      if (OnViewerHitTestUpdate != null && this.xrState == WebXRState.AR)
-      {
-        if (GetHitTestPoseFromViewerHitTestPoseArray(ref viewerHitTestPose))
-        {
-          OnViewerHitTestUpdate?.Invoke(viewerHitTestPose);
-        }
-      }
     }
 
     private void UpdateXRCameras()
@@ -252,7 +245,6 @@ namespace WebXR
       Native.SetWebXREvents(OnStartAR, OnStartVR, UpdateVisibilityState, OnEndXR, OnXRCapabilities, OnInputProfiles);
       Native.InitControllersArray(controllersArray);
       Native.InitHandsArray(handsArray);
-      Native.InitViewerHitTestPoseArray(viewerHitTestPoseArray);
       Native.InitXRSharedArray(sharedArray);
 #endif
     }
@@ -270,22 +262,13 @@ namespace WebXR
       public static extern void InitHandsArray(float[] array);
 
       [DllImport("__Internal")]
-      public static extern void InitViewerHitTestPoseArray(float[] array);
-
-      [DllImport("__Internal")]
       public static extern void ToggleAR();
 
       [DllImport("__Internal")]
       public static extern void ToggleVR();
 
       [DllImport("__Internal")]
-      public static extern void ToggleViewerHitTest();
-
-      [DllImport("__Internal")]
       public static extern void ControllerPulse(int controller, float intensity, float duration);
-
-      [DllImport("__Internal")]
-      public static extern void PreRenderSpectatorCamera();
 
       [DllImport("__Internal")]
       public static extern void SetWebXREvents(StartXREvent on_start_ar,
@@ -336,10 +319,6 @@ namespace WebXR
 
     internal static event HandUpdate OnHandUpdate;
 
-    public delegate void HitTestUpdate(WebXRHitPoseData hitPoseData);
-
-    internal static event HitTestUpdate OnViewerHitTestUpdate;
-
     internal delegate void StartXREvent(int viewsCount,
         float left_x, float left_y, float left_w, float left_h,
         float right_x, float right_y, float right_w, float right_h);
@@ -369,11 +348,6 @@ namespace WebXR
     // Shared array for hands data
     float[] handsArray = new float[2 * (25 * 8 + 5 + 7)]; // 2 hands, 25 joints
 
-    // Shared array for hit-test pose data
-    float[] viewerHitTestPoseArray = new float[9];
-
-    bool viewerHitTestOn = false;
-
     private bool updatedControllersOnEnd = true;
 
     private WebXRHandData leftHand = new WebXRHandData();
@@ -381,8 +355,6 @@ namespace WebXR
 
     private WebXRControllerData controller1 = new WebXRControllerData();
     private WebXRControllerData controller2 = new WebXRControllerData();
-
-    private WebXRHitPoseData viewerHitTestPose = new WebXRHitPoseData();
 
     internal WebXRDisplayCapabilities capabilities = new WebXRDisplayCapabilities();
 
@@ -421,7 +393,6 @@ namespace WebXR
       this.viewsCount = viewsCount;
       this.leftRect = leftRect;
       this.rightRect = rightRect;
-      viewerHitTestOn = false;
       reportedXRStateSwitch = false;
       if (state != WebXRState.NORMAL)
       {
@@ -492,39 +463,10 @@ namespace WebXR
 #endif
     }
 
-    public void StartViewerHitTest()
-    {
-#if UNITY_WEBGL
-      if (xrState == WebXRState.AR && !viewerHitTestOn)
-      {
-        viewerHitTestOn = true;
-        Native.ToggleViewerHitTest();
-      }
-#endif
-    }
-
-    public void StopViewerHitTest()
-    {
-#if UNITY_WEBGL
-      if (xrState == WebXRState.AR && viewerHitTestOn)
-      {
-        viewerHitTestOn = false;
-        Native.ToggleViewerHitTest();
-      }
-#endif
-    }
-
     public void HapticPulse(WebXRControllerHand hand, float intensity, float duration)
     {
 #if UNITY_WEBGL
       Native.ControllerPulse((int)hand, intensity, duration);
-#endif
-    }
-
-    public void PreRenderSpectatorCamera()
-    {
-#if UNITY_WEBGL
-      Native.PreRenderSpectatorCamera();
 #endif
     }
 
@@ -630,27 +572,5 @@ namespace WebXR
       return true;
     }
 
-    bool GetHitTestPoseFromViewerHitTestPoseArray(ref WebXRHitPoseData hitPoseData)
-    {
-      int arrayPosition = 0;
-      int frameNumber = (int)viewerHitTestPoseArray[arrayPosition++];
-      if (hitPoseData.frame == frameNumber)
-      {
-        return false;
-      }
-
-      hitPoseData.frame = frameNumber;
-      hitPoseData.available = viewerHitTestPoseArray[arrayPosition++] != 0;
-      if (!hitPoseData.available)
-      {
-        return true;
-      }
-
-      hitPoseData.position = new Vector3(viewerHitTestPoseArray[arrayPosition++], viewerHitTestPoseArray[arrayPosition++],
-          viewerHitTestPoseArray[arrayPosition++]);
-      hitPoseData.rotation = new Quaternion(viewerHitTestPoseArray[arrayPosition++], viewerHitTestPoseArray[arrayPosition++],
-          viewerHitTestPoseArray[arrayPosition++], viewerHitTestPoseArray[arrayPosition++]);
-      return true;
-    }
   }
 }
