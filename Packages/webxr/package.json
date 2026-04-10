@@ -2,8 +2,8 @@
   "name": "com.exeud.webxr",
   "displayName": "Exeud WebXR Provider",
   "version": "0.23.0-preview",
-  "unity": "6000.1",
-  "description": "WebXR Provider Plugin for Unity — forked from De-Panther/unity-webxr-export for ExeudVR with WebGPU roadmap",
+  "unity": "6000.3",
+  "description": "WebXR Provider Plugin for Unity \u2014 forked from De-Panther/unity-webxr-export for ExeudVR with WebGPU roadmap",
   "changelogUrl": "https://github.com/Exeud/unity-webxr-export/blob/master/Packages/webxr/CHANGELOG.md",
   "documentationUrl": "https://github.com/Exeud/unity-webxr-export/tree/master/Documentation",
   "keywords": [
